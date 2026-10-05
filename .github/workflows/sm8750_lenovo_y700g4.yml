@@ -1,0 +1,30 @@
+# TB322FC (Lenovo Legion Y700 Gen4 / SM8750 "Pakala") UEFI build
+# Added by y700-elden project (G1-29 Route A). Mirrors sm8750_xiaomi_pad8p.yml.
+
+name: SM8750 Lenovo Y700 Gen4
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'Platforms/PakalaPkg/Device/lenovo-y700g4/**'
+  workflow_dispatch:
+
+env:
+  WM_CI_BUILD: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build SB/NOSB uefi for lenovo-y700g4.
+        run: bash scripts/ci_setup.sh && ./build_uefi.py -d lenovo-y700g4
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: uefi-images-lenovo-y700g4
+          path: Build/*/ci_artifacts
+          compression-level: 9
