@@ -9,6 +9,11 @@ on:
     paths:
       - 'Platforms/PakalaPkg/Device/lenovo-y700g4/**'
   workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'RELEASE or DEBUG'
+        required: false
+        default: 'RELEASE'
 
 env:
   WM_CI_BUILD: true
@@ -20,11 +25,11 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Build SB/NOSB uefi for lenovo-y700g4.
-        run: bash scripts/ci_setup.sh && ./build_uefi.py -d lenovo-y700g4
+        run: bash scripts/ci_setup.sh && ./build_uefi.py -d lenovo-y700g4 -t ${{ inputs.build_type || 'RELEASE' }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: uefi-images-lenovo-y700g4
+          name: uefi-images-lenovo-y700g4-${{ inputs.build_type || 'RELEASE' }}
           path: Build/*/ci_artifacts
           compression-level: 9
